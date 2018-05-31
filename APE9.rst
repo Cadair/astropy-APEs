@@ -39,7 +39,7 @@ functionality:
 #. Extending timeseries with extra rows
 #. Concatenating multiple timeseries objects
 #. Sorting
-#. Slicing / selecting time ranges (indexing)
+#. Slicing / selecting time ranges, i-index and column (indexing)
 #. Re-binning and re-sampling timeseries
 #. Interpolating to different time stamps.
 #. Masking
@@ -76,6 +76,64 @@ This APE proposes that we place the following restrictions on binned data:
 #. Contiguious bins, i.e. the start of the i+1th bin is the end of the ith bin.
 #. The width of the bins is stored in a second column containing ``TimeDelta`` objects.
 
+
+Indexing
+--------
+
+Indexing by Time-Like
+#####################
+
+When indexing using time-like values you get a TimeSeries returned.
+A single index value can be used:
+	`single_row_timeseries = timeseries[datetime]`
+Which returns a Timeseries with a single row and the same columns as the original.
+
+Multiple index values:
+	`three_row_timeseries = timeseries[datetime1, datetime1, datetime3]`
+Which returns a TimeSeries with 3 rows and the same columns as the original.
+
+A range of datetimes:
+	`multi_row_timeseries = timeseries[datetime_start: datetime_end]`
+Which returns a TimeSeries truncated between the datetime_start (inclusive) and datetime_end (exclusive?).
+
+*Note: neither datetime_start nore datetime_end need to be exact index value in the original Timeseries.*
+
+If you input a time-like value not in the index then raise an IndexError.
+
+
+Indexing by Integer (i-index)
+#############################
+
+Similar to time-like indexing:
+	`single_row_timeseries = timeseries[i_integer]`
+  
+	`three_row_timeseries = timeseries[i_integer1, i_integer1, i_integer3]`
+  
+	`multi_row_timeseries = timeseries[i_integer_start: i_integer_end]`
+  
+With support of negative index values
+	`single_row_timeseries = timeseries[-i_integer]`
+  
+	`three_row_timeseries = timeseries[-i_integer1, -i_integer1, -i_integer3]`
+  
+	`multi_row_timeseries = timeseries[i_integer_start: -i_integer_end]`
+
+Indexing by Column Name (String)
+################################
+
+When indexing using a String for the column name you get a Timeseries with the given column/s.
+
+You can use a single column name:
+
+	`single_column_timeseries = timeseries[colname_string]`
+  
+Which returns a Timeseries with a single column and the same rows/indices as the original.
+
+You can use a multiple column:
+
+	`multi_column_timeseries = timeseries[colname_string1, colname_string2, colname_string3]`
+  
+Which returns a Timeseries with a multiple columns (in the given order) and the same rows/indices as the original.
 
 
 Branches and pull requests
